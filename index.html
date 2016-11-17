@@ -47,7 +47,7 @@
 					<p>						
 						<ol>
 							<li>Support for ebooks</li>
-							<li>A new payment gateway (Stripe)</li>
+							<li>Support for a new payment gateway (Stripe)</li>
 							<li>A recommendation system (recommends magazines, comics, ebooks, videos and news)</li>
 						</ol>					
 					</p>					
@@ -55,15 +55,15 @@
 				<section>
 					<h2>A bit of background</h2>
 					<p>We were using <strong>Go</strong></p>
-					<p>It has great performance an a small memory footprint</p>
+					<p>Great performance an a small memory footprint</p>
 					<p><img width="30%" class="plain" src="img/gopherbw.png" alt="Gopher"></p>
 				</section>
 				<section>
-					<h2>But the language..</h2>
+					<h2>But the language...</h2>
 					<p><img width="40%" class="plain" src="img/sadpanda1.gif" alt="Sad Panda"></p>
 				</section>
 				<section>
-					<p class="fragment">It isn't dynamic</p>
+					<p>It isn't dynamic</p>
 					<p class="fragment">It's hard to model complex objects hierarchies</p>
 					<p class="fragment">Fault tolerance has to be managed by hand</p>					
 				</section>
@@ -73,11 +73,13 @@
 					</p>
 				</section>
 				<section>
-					<h1>1 year later it has been a success..</h1>
-					<h1 class="fragment">This is what I learned</h1>
+					<h1>1 year later it has been a success</h1>					
 				</section>
 				<section>
-					<h1>Embrace OTP</h1>
+					<h1>This is what I learned</h1>					
+				</section>				
+				<section>
+					<h1>1. Embrace OTP</h1>
 					<p>
 						<img src="img/erlang.svg" class="plain" alt="Erlang">
 					</p>
@@ -89,7 +91,7 @@
 				</section>
 				<section>
 					<h2>OTP apps encapsulate common functionality</h1>
-					<h2 class="fragment">and isolate processes</h1>
+					<h2 class="fragment">and group processes together</h1>
 				</section>
 				<section>
 					<p><img width="100%" src="img/arch1.png" class="plain" alt="Architecture"></p>
@@ -106,7 +108,8 @@ mix new payments --module Payments --sup
 				</section>
 				<section>
 					<pre><code class="hljs" data-trim>
-						defp deps do
+					#In your phoenix app
+defp deps do
     [{:phoenix, "~> 1.2.1"},
      ...
      {:payments, 
@@ -121,7 +124,8 @@ end
 				</section>			
 				<section>
 					<pre><code class="hljs" data-trim >
-						def application do
+					#In your phoenix app
+def application do
     [mod: {Services, []},
      applications: [:phoenix, ...,
      :payments, :recommendations]]
@@ -135,9 +139,7 @@ end
 					<h1>2. Use Umbrella projects</h1>
 				</section>
 				<section>
-					<p class="fragment">No need to update mix dependencies</p>
-					<p class="fragment">All on the same repo</p>
-					<p class="fragment">reload() works!</p>
+					<p><img height="400px" src="img/folders.png" class="plain" alt="folders structure"></p>
 				</section>
 				<section>
 					<p>
@@ -155,9 +157,6 @@ mix new payments --module Payments --sup
 					</p>
 				</section>
 				<section>
-					<p><img height="400px" src="img/folders.png" class="plain" alt="folders structure"></p>
-				</section>
-				<section>
 					<h2>In your phoenix app</h2>
 					<pre><code class="hljs" data-trim>
 						defp deps do
@@ -170,12 +169,22 @@ end
 					</code></pre>
 				</section>
 				<section>
-					<h1>3</h1>
-					<p><img height="400px" src="img/genservers.jpg" class="plain" alt="GenServers everywhere"></p>
+					<p>No need to update mix dependencies</p>
+					<p class="fragment">All on the same repo</p>
+					<p class="fragment">reload() works!</p>
+				</section>
+												
+				<section>
+					<h1>3. <img height="400px" src="img/genservers.jpg" class="plain" alt="GenServers everywhere"></h1>
 				</section>
 				<section>
-					
 					<p><img height="400px" src="img/otpgen.png" class="plain" alt="GenServers inside otp app"></p>
+				</section>
+				<section>
+					<h2>Supervisor strategies</h2>
+				</section>
+				<section>
+					<p><img src="img/trends.jpg" class="plain" alt="Screenshot showing trending magazines"></p>
 				</section>
 				<section>
 					<h2>One for one</h2>
@@ -183,10 +192,28 @@ end
 					<p>Example: A gen server that calculates the trending magazines for each day</p>
 				</section>
 				<section>
+					<p><img src="img/rec.jpg" class="plain" alt="Screenshot showing recommended magazines"></p>
+				</section>
+				<section>
+					<p><img src="img/recom01.png" class="plain" alt="Screenshot showing recommended magazines"></p>
+				</section>
+				<section>
+					<p><img src="img/recom02.png" class="plain" alt="Screenshot showing recommended magazines"></p>
+				</section>
+				<section>
+					<p><img src="img/recom03.png" class="plain" alt="Screenshot showing recommended magazines"></p>
+				</section>
+				<section>
+					<p><img src="img/recom04.png" class="plain" alt="Screenshot showing recommended magazines"></p>
+				</section>
+				<section>
 					<h2>Simple one for one</h2>
 					<p>Creates a Gen Server each time a request is made</p>
 					<p>One process per user</p>
 					<p>Example: We create a GenServer each time a user requests her personalized recommended ebooks</p>
+				</section>
+				<section>
+					<p><img src="img/rabbitmq.png" class="plain" alt="RabbitMQ"></p>
 				</section>
 				<section>
 					<h2>Poolboy</h2>
@@ -200,20 +227,23 @@ end
 					<p><img height="400px" src="img/processes.png" class="plain" alt="GenServers processes monitor"></p>
 				</section>
 				<section>
-					<h1>And more..</h1>
+					<h1>And more...</h1>
 					<p class="fragment">Plugs are awesome</p>
 					<p class="fragment">Ecto rocks</p>
 					<p class="fragment">Invest on training</p>
 				</section>
 				<section>
-					<h1>With Elixir..</h1>
+					<h1>With Elixir...</h1>
 					<p><img height="400px" src="img/happypanda.gif" class="plain" alt="Happy panda"></p>
 					
 				</section>
 				<section>
 					<h1>Q &amp; A</h1>
 					<p>
-						Erick Camacho <a href="https://twitter.com/ecamacho">@ecamacho</a>
+						Erick Camacho <a href="https://twitter.com/ecamacho">@ecamacho</a>					
+					</p>
+					<p>
+						<a href="https://ecamacho.github.io/elixir_at_work">https://ecamacho.github.io/elixir_at_work</a>						
 					</p>
 				</section>
 			</div>
