@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Elixir at work</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/simple.css">
+	
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Elixir at Work</h1>					
+					<p>
+						Erick Camacho <a href="https://twitter.com/ecamacho">@ecamacho</a>
+					</p>
+					<p>
+						November 2016
+					</p>
+				</section>
+				<section>					
+					<p>
+						<img class="plain" src="img/nubleer.png" alt="Nubleer">						
+					</p>
+					<p>
+						ex - Nubleer (a mexican startup)
+					</p>
+				</section>
+				<section>
+					<h2>What we did</h2>
+					<p>						
+						<ol>
+							<li>Support for ebooks</li>
+							<li>A new payment gateway (Stripe)</li>
+							<li>A recommendation system (recommends magazines, comics, ebooks, videos and news)</li>
+						</ol>					
+					</p>					
+				</section>
+				<section>
+					<h2>A bit of background</h2>
+					<p>We were using <strong>Go</strong></p>
+					<p>It has great performance an a small memory footprint</p>
+					<p><img width="30%" class="plain" src="img/gopherbw.png" alt="Gopher"></p>
+				</section>
+				<section>
+					<h2>But the language..</h2>
+					<p><img width="40%" class="plain" src="img/sadpanda1.gif" alt="Sad Panda"></p>
+				</section>
+				<section>
+					<p class="fragment">It isn't dynamic</p>
+					<p class="fragment">It's hard to model complex objects hierarchies</p>
+					<p class="fragment">Fault tolerance has to be managed by hand</p>					
+				</section>
+				<section>
+					<p>
+						<img src="img/elixir_phoenix.png" class="plain" alt="Elixir and Phoenix">
+					</p>
+				</section>
+				<section>
+					<h1>1 year later it has been a success..</h1>
+					<h1 class="fragment">This is what I learned</h1>
+				</section>
+				<section>
+					<h1>Embrace OTP</h1>
+					<p>
+						<img src="img/erlang.svg" class="plain" alt="Erlang">
+					</p>
+				</section>
+				<section>
+					<p>
+						<img src="img/other.png" class="plain" alt="OTP = other than Phoenix">
+					</p>
+				</section>
+				<section>
+					<h2>OTP apps encapsulate common functionality</h1>
+					<h2 class="fragment">and isolate processes</h1>
+				</section>
+				<section>
+					<p><img width="100%" src="img/arch1.png" class="plain" alt="Architecture"></p>
+				</section>
+				<section>
+					<h2>Each OTP app should have a Supervisor</h2>
+					<pre><code class="hljs" data-trim>
+mix new recommendations --module Recommendations --sup
+mix new payments --module Payments --sup
+					</code></pre>
+				</section>
+				<section>
+					<p><img src="img/otpapp.png" class="plain" alt="OTP app"></p>
+				</section>
+				<section>
+					<pre><code class="hljs" data-trim>
+						defp deps do
+    [{:phoenix, "~> 1.2.1"},
+     ...
+     {:payments, 
+     git: "git@yourgitserver.com:nubleer/payments.git", 
+     checkout: "0.0.1"},
+     {:recommendations, 
+     git: "git@yourgitserver.com:nubleer/payments.git", 
+     checkout: "0.0.1"},
+   ]
+end
+					</code></pre>
+				</section>			
+				<section>
+					<pre><code class="hljs" data-trim >
+						def application do
+    [mod: {Services, []},
+     applications: [:phoenix, ...,
+     :payments, :recommendations]]
+end
+					</code></pre>
+				</section>	
+				<section>
+					<p><img src="img/observer_apps.png" alt="Observer"></p>
+				</section>
+				<section>
+					<h1>2. Use Umbrella projects</h1>
+				</section>
+				<section>
+					<p class="fragment">No need to update mix dependencies</p>
+					<p class="fragment">All on the same repo</p>
+					<p class="fragment">reload() works!</p>
+				</section>
+				<section>
+					<p>
+						<pre><code class="hljs" data-trim>
+							mix new nubleer --umbrella 
+						</code></pre>						
+					</p>
+					<p>
+						<pre><code class="hljs" data-trim>
+							#inside apps folder
+mix phoenix.new services
+mix new recommendations --module Recommendations --sup
+mix new payments --module Payments --sup
+						</code></pre>
+					</p>
+				</section>
+				<section>
+					<p><img height="400px" src="img/folders.png" class="plain" alt="folders structure"></p>
+				</section>
+				<section>
+					<h2>In your phoenix app</h2>
+					<pre><code class="hljs" data-trim>
+						defp deps do
+    [{:phoenix, "~> 1.2.1"},
+     ...
+     {:payments, in_umbrella: true},
+     {:recommendations, in_umbrella: true},
+   ]
+end
+					</code></pre>
+				</section>
+				<section>
+					<h1>3</h1>
+					<p><img height="400px" src="img/genservers.jpg" class="plain" alt="GenServers everywhere"></p>
+				</section>
+				<section>
+					
+					<p><img height="400px" src="img/otpgen.png" class="plain" alt="GenServers inside otp app"></p>
+				</section>
+				<section>
+					<h2>One for one</h2>
+					<p>Global GenServer</p>
+					<p>Example: A gen server that calculates the trending magazines for each day</p>
+				</section>
+				<section>
+					<h2>Simple one for one</h2>
+					<p>Creates a Gen Server each time a request is made</p>
+					<p>One process per user</p>
+					<p>Example: We create a GenServer each time a user requests her personalized recommended ebooks</p>
+				</section>
+				<section>
+					<h2>Poolboy</h2>
+					<p>Creates a pool of GenServers and load balance messages among them</p>
+					<p>Example: We create a set of RabbitMQ listeners per each RabbitMQ exchange</p>
+				</section>
+				<section>
+					<p><img height="400px" src="img/servers.png" class="plain" alt="GenServers types diagram"></p>
+				</section>
+				<section>
+					<p><img height="400px" src="img/processes.png" class="plain" alt="GenServers processes monitor"></p>
+				</section>
+				<section>
+					<h1>And more..</h1>
+					<p class="fragment">Plugs are awesome</p>
+					<p class="fragment">Ecto rocks</p>
+					<p class="fragment">Invest on education</p>
+				</section>
+				<section>
+					<h1>Q &amp; A</h1>
+					<p>
+						Erick Camacho <a href="https://twitter.com/ecamacho">@ecamacho</a>
+					</p>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
